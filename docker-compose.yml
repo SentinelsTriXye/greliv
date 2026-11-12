@@ -1,0 +1,12 @@
+# Base de données PostgreSQL + PostGIS pour le développement local.
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: greliv
+      POSTGRES_PASSWORD: greliv
+      POSTGRES_DB: greliv
+    ports: ["5432:5432"]
+    volumes: ["greliv_pg:/var/lib/postgresql/data"]
+volumes:
+  greliv_pg:
