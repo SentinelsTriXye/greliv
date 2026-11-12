@@ -1,0 +1,10 @@
+{
+  "name": "GreLiv — Livraison à Grenoble",
+  "short_name": "GreLiv",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F3F5F9",
+  "theme_color": "#1565D8",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

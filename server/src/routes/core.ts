@@ -9,7 +9,7 @@ import { h, auth, bad, forbidden, notFound, signToken, HttpError } from '../http
 import { config, paymentProvider } from '../config.js';
 import { geocode, reverseGeocode, getRoute, GRENOBLE, roadDistance, travelSeconds } from '../geo.js';
 import { send, notify } from '../realtime.js';
-import { checkMockCard, stripeIntentSucceeded, connectOnboardingUrl } from '../payments.js';
+import { checkMockCard, stripeIntentSucceeded, connectOnboardingUrl, stripe } from '../payments.js';
 import { computeQuote, createOrder, loadOrder, loadOrders, shapeOrder, canView, markPaid, cancelOrder, merchantOpen, deliveryFee, ACTIVE_COURIER } from '../orders.js';
 
 export const core = Router();
@@ -171,7 +171,10 @@ core.post('/orders', auth('client'), h(async (req, res) => {
   }).parse(req.body);
   const r = await createOrder(req.user, b);
   const o = await loadOrder(r.orderId);
-  res.status(r.duplicate ? 200 : 201).json({ order: shapeOrder(o, req.user), duplicate: r.duplicate, clientSecret: (r as any).clientSecret ?? null, provider: o.payment_provider });
+  let clientSecret = (r as any).clientSecret ?? null;
+  // Nouvel essai sur une commande déjà créée : on réutilise le même paiement Stripe
+  if (!clientSecret && stripe && o.status === 'awaiting_payment' && o.payment_ref) clientSecret = (await stripe.paymentIntents.retrieve(o.payment_ref)).client_secret;
+  res.status(r.duplicate ? 200 : 201).json({ order: shapeOrder(o, req.user), duplicate: r.duplicate, clientSecret, provider: o.payment_provider });
 }));
 core.post('/orders/:id/pay', auth('client'), h(async (req, res) => {
   const o = await one('SELECT * FROM orders WHERE id = $1 AND client_id = $2', [req.params.id, req.user.id]);
