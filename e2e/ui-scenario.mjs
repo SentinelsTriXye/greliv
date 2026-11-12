@@ -11,16 +11,21 @@ const OUT = process.argv[2] || '.';
 const browser = await chromium.launch();
 const errors = [];
 async function open(name, viewport) {
-  const ctx = await browser.newContext({ viewport, locale: 'fr-FR', timezoneId: 'Europe/Paris' });
+  const ctx = await browser.newContext({ viewport, locale: 'fr-FR', timezoneId: 'Europe/Paris', deviceScaleFactor: Number(process.env.SCALE || 1) });
+  // Certains réseaux n'autorisent que tile.openstreetmap.org (sans sous-domaine a/b/c)
+  if (process.env.TILE_PROXY) await ctx.route(/https:\/\/[abc]\.tile\.openstreetmap\.org\//, async (route) => {
+    try { route.fulfill({ response: await ctx.request.get(route.request().url().replace(/\/\/[abc]\./, '//'), { headers: { 'User-Agent': 'greliv-e2e/1.0' } }) }); } catch { route.abort(); }
+  });
   const page = await ctx.newPage();
   page.setDefaultTimeout(15000);
   page.on('console', (m) => { if (m.type() === 'error' && !/tile\.openstreetmap|ERR_|Failed to load resource/.test(m.text())) errors.push(`[${name}] ${m.text()}`); });
   page.on('pageerror', (e) => errors.push(`[${name}] ${e.message}`));
   return page;
 }
-const shot = (page, name) => page.screenshot({ path: `${OUT}/${name}.png` });
+// CLEAN=1 : attend la fin des animations et la disparition des messages avant chaque capture (visuels de communication)
+const shot = async (page, name) => { if (process.env.CLEAN) await page.waitForTimeout(5200); return page.screenshot({ path: `${OUT}/${name}.png` }); };
 const step = (s) => console.log('→', s);
-const phone = { width: 390, height: 844 }, desk = { width: 1320, height: 860 };
+const phone = { width: 390, height: 844 }, desk = process.env.TABLET ? { width: 1180, height: 820 } : { width: 1320, height: 860 };
 
 const client = await open('client', phone), merchant = await open('commerçant', desk), courier = await open('livreur', phone), admin = await open('admin', desk);
 
