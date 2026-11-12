@@ -54,14 +54,18 @@ export function MapView({ markers = [], route, className = '', fitKey, onPick, f
   useEffect(() => {
     const m = L.map(el.current!, { zoomControl: false }).setView(GRENOBLE, zoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(m);
+    m.attributionControl.setPrefix(false);
     L.control.zoom({ position: 'bottomright' }).addTo(m);
     layers.current = { route: L.layerGroup().addTo(m), markers: L.layerGroup().addTo(m) };
     m.on('click', (e) => pick.current?.({ lat: e.latlng.lat, lng: e.latlng.lng }));
     map.current = m;
-    const t = setTimeout(() => m.invalidateSize(), 350);
-    const ro = new ResizeObserver(() => m.invalidateSize());
+    let alive = true;
+    const resize = () => { if (alive) m.invalidateSize({ animate: false }); };
+    const t = setTimeout(resize, 350);
+    const ro = new ResizeObserver(resize);
     ro.observe(el.current!);
-    return () => { clearTimeout(t); ro.disconnect(); m.remove(); map.current = null; };
+    // Arrêter toute animation en cours avant de détruire la carte (changement d'écran pendant un déplacement)
+    return () => { alive = false; clearTimeout(t); ro.disconnect(); map.current = null; m.stop(); m.off(); m.remove(); };
   }, []); // eslint-disable-line
 
   const mk = JSON.stringify(markers.map((m) => [m.id, m.lat, m.lng, m.kind, m.emoji, m.label]));
@@ -90,11 +94,11 @@ export function MapView({ markers = [], route, className = '', fitKey, onPick, f
   useEffect(() => {
     const m = map.current; if (!m) return;
     const pts: [number, number][] = [...markers.map((x) => [x.lat, x.lng] as [number, number]), ...(route || [])];
-    if (pts.length === 1) m.setView(pts[0], Math.max(m.getZoom(), 15));
-    else if (pts.length > 1) m.fitBounds(L.latLngBounds(pts), { padding: [44, 44], maxZoom: 16 });
+    if (pts.length === 1) m.setView(pts[0], Math.max(m.getZoom(), 15), { animate: false });
+    else if (pts.length > 1) m.fitBounds(L.latLngBounds(pts), { padding: [44, 44], maxZoom: 16, animate: false });
   }, [fitKey]); // eslint-disable-line
 
-  useEffect(() => { if (follow && map.current) map.current.panTo([follow.lat, follow.lng], { animate: true }); }, [follow?.lat, follow?.lng]); // eslint-disable-line
+  useEffect(() => { if (follow && map.current) map.current.panTo([follow.lat, follow.lng], { animate: false }); }, [follow?.lat, follow?.lng]); // eslint-disable-line
   return <div ref={el} className={`map ${className}`} />;
 }
 

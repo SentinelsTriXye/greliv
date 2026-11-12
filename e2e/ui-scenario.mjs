@@ -73,12 +73,12 @@ await courier.waitForTimeout(2500);
 await shot(courier, '08-livreur-vers-restaurant');
 
 step('Commerçant : voit le livreur, signale la commande prête');
-await merchant.getByText(/Léa Dubois vient récupérer/).waitFor();
+await merchant.locator('.kanban').getByText(/vient récupérer la commande/).waitFor();
 await shot(merchant, '09-commercant-preparation');
 await merchant.getByRole('button', { name: 'Commande prête' }).click();
 
 step('Client : suivi en direct');
-await client.getByText(/Votre livreur/).waitFor();
+await client.locator('.page').getByText(/Votre livreur ·/).waitFor();
 await client.waitForTimeout(1500);
 await shot(client, '10-client-suivi');
 const code = (await client.locator('.code').innerText()).trim();

@@ -86,6 +86,7 @@ admin.patch('/merchants/:id', h(async (req, res) => {
   if (!m) throw notFound();
   if (b.status === 'approved') await notify(m.owner_id, 'Établissement validé 🎉', `${m.name} est maintenant visible par les clients.`);
   if (b.status === 'suspended') await notify(m.owner_id, 'Établissement suspendu', 'Contactez l\'assistance pour en savoir plus.');
+  send([m.owner_id], { type: 'profile' }, { admins: true });
   res.json({ ok: true });
 }));
 
@@ -102,7 +103,7 @@ admin.patch('/couriers/:id', h(async (req, res) => {
   if (!c) throw notFound();
   if (b.status === 'verified') await notify(c.user_id, 'Compte vérifié 🎉', 'Vous pouvez maintenant vous rendre disponible et recevoir des courses.');
   if (b.status === 'suspended') await notify(c.user_id, 'Compte suspendu', 'Contactez l\'assistance pour en savoir plus.');
-  send([c.user_id], { type: 'profile' });
+  send([c.user_id], { type: 'profile' }, { admins: true });
   res.json({ ok: true });
 }));
 

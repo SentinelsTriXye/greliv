@@ -233,6 +233,7 @@ function ActiveRide({ order, remaining, route, onChange }: { order: any; remaini
   const [code, setCode] = useState('');
   const [chat, setChat] = useState(false);
   const [help, setHelp] = useState(false);
+  useEffect(() => { const t = setInterval(onChange, 8000); return () => clearInterval(t); }, []); // eslint-disable-line — kilomètres et état « prête » à jour
   const drop = ['picked_up', 'delivering'].includes(order.status);
   const target = drop ? order.dropoff : order.merchant;
   const arrived = remaining && remaining.m < 60;
