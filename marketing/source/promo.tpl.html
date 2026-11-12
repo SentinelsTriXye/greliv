@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Sora;font-weight:600;src:url(node_modules/@fontsource/sora/files/sora-latin-600-normal.woff2)}
+@font-face{font-family:Sora;font-weight:800;src:url(node_modules/@fontsource/sora/files/sora-latin-800-normal.woff2)}
+@font-face{font-family:Inter;font-weight:500;src:url(node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2)}
+@font-face{font-family:Inter;font-weight:700;src:url(node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2)}
+:root{--blue:#1565D8;--orange:#FF7900;--night:#0B1E3F}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;overflow:hidden}
+#stage{position:absolute;left:0;top:0;overflow:hidden;background:#07142C;font-family:Inter,sans-serif;font-weight:500;color:#fff}
+body.h #stage{width:1920px;height:1080px} body.v #stage{width:1080px;height:1920px}
+.scene{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
+.abs{position:absolute} .fill{position:absolute;inset:0}
+.blob{position:absolute;border-radius:50%;filter:blur(120px);opacity:.55}
+.eyebrow{font-family:Sora;font-weight:600;font-size:26px;letter-spacing:.2em;color:var(--orange);text-transform:uppercase}
+.h1{font-family:Sora;font-weight:800;font-size:84px;line-height:1.04;letter-spacing:-.03em;margin-top:18px}
+.h1 b{color:var(--orange);font-weight:800}
+.lead{font-size:34px;line-height:1.35;color:#C6D4EE;margin-top:26px}
+.steps{margin-top:40px;display:flex;flex-direction:column;gap:18px}
+.stepc{display:flex;align-items:center;gap:20px;font-family:Sora;font-weight:600;font-size:36px;padding:18px 26px;border-radius:26px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1)}
+.stepc i{font-style:normal;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--blue);font-size:28px;flex:none}
+body.v .steps{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:30px} body.v .stepc{font-size:28px;padding:12px 20px} body.v .stepc i{width:44px;height:44px;font-size:22px}
+.copy{position:absolute}
+body.h .copy{left:130px;top:50%;width:800px;transform:translateY(-54%)}
+body.v .copy{left:70px;right:70px;top:190px;text-align:center} body.v .h1{font-size:76px}
+/* Appareils */
+.phone{position:absolute;border-radius:70px;background:#05080F;padding:16px;box-shadow:0 50px 120px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.14) inset,0 0 90px rgba(21,101,216,.35)}
+.phone .scr,.tablet .scr{position:relative;width:100%;height:100%;overflow:hidden;background:#F3F5F9}
+.phone .scr{border-radius:56px} .tablet .scr{border-radius:22px}
+.phone .notch{position:absolute;top:28px;left:50%;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:#05080F;z-index:5}
+.scr img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.tablet{position:absolute;border-radius:40px;background:#05080F;padding:20px;box-shadow:0 50px 120px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.14) inset,0 0 90px rgba(255,121,0,.25)}
+body.h .phone{width:416px;height:880px;right:300px;top:112px} body.v .phone{width:470px;height:994px;left:305px;top:640px}
+body.h .tablet{width:930px;height:650px;right:70px;top:215px} body.h #c3{width:720px;left:110px} body.h #c3 .stepc{font-size:32px} body.v .tablet{width:980px;height:685px;left:50px;top:800px}
+.tap{position:absolute;width:90px;height:90px;margin:-45px;border-radius:50%;background:rgba(255,121,0,.35);border:4px solid var(--orange);opacity:0;z-index:6}
+.pop{position:absolute;z-index:8;background:#fff;color:#14233F;border-radius:26px;padding:18px 24px;box-shadow:0 24px 60px rgba(0,0,0,.4);font-family:Sora;font-weight:600;font-size:28px;display:flex;align-items:center;gap:14px;white-space:nowrap}
+.pop small{display:block;font-family:Inter;font-weight:500;font-size:20px;color:#64708A}
+.pop .ic{width:56px;height:56px;border-radius:16px;background:var(--orange);display:grid;place-items:center;font-size:30px;flex:none}
+/* Bandeau permanent */
+#brand{position:absolute;left:54px;top:44px;display:flex;align-items:center;gap:14px;font-family:Sora;font-weight:800;font-size:34px;z-index:50}
+#brand img{width:52px;height:52px}
+#dev{position:absolute;right:54px;top:50px;z-index:50;font-size:22px;font-weight:700;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+#dev::before{content:'';display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--orange);margin-right:10px}
+body.v #brand{left:44px;top:70px} body.v #dev{right:44px;top:76px;font-size:21px}
+/* Sous-titres */
+#sub{position:absolute;left:0;right:0;text-align:center;z-index:60}
+#sub span{display:inline-block;background:rgba(5,10,22,.78);padding:14px 30px;border-radius:18px;font-weight:700;font-size:38px;line-height:1.25;max-width:90%}
+body.h #sub{bottom:54px} body.v #sub{top:1680px} body.v #sub span{font-size:40px}
+#sub span.kara{background:none;padding:0;max-width:96%} #sub .kara b{display:inline-block;font-family:Sora;font-weight:800;font-size:46px;letter-spacing:-.01em;background:#05080F;color:#fff;padding:8px 18px;border-radius:14px;margin:0 5px 10px;box-shadow:0 8px 24px rgba(0,0,0,.35)} #sub .kara b.on{background:var(--orange);transform:scale(1.06)}
+/* Carte */
+#mapwrap{position:absolute;left:0;top:0;transform-origin:0 0;width:2048px;height:1536px}
+#mapwrap img{position:absolute;left:0;top:0;width:2048px;height:1536px;filter:saturate(.5) brightness(1.03) contrast(1.02)}
+#maptint{position:absolute;left:0;top:0;width:2048px;height:1536px;background:rgba(21,101,216,.13);mix-blend-mode:multiply}
+.mk{position:absolute;transform-origin:0 0}
+.pin{position:absolute;left:-36px;top:-78px;width:72px;height:72px;border-radius:50% 50% 50% 8px;transform:rotate(-45deg);background:var(--orange);border:5px solid #fff;box-shadow:0 10px 24px rgba(11,30,63,.45);display:grid;place-items:center;font-size:32px}
+.pin span{transform:rotate(45deg)}
+.lbl{position:absolute;left:46px;top:-74px;background:#0B1E3F;color:#fff;font-family:Sora;font-weight:600;font-size:24px;padding:8px 16px;border-radius:14px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.rider{position:absolute;left:-40px;top:-40px;width:80px;height:80px;border-radius:50%;background:var(--orange);border:6px solid #fff;display:grid;place-items:center;font-size:38px;box-shadow:0 0 0 14px rgba(255,121,0,.25),0 10px 24px rgba(11,30,63,.5)}
+.hud{position:absolute;z-index:20;background:#0B1E3F;border-radius:30px;padding:26px 32px;box-shadow:0 30px 70px rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.12)}
+.hud .k{font-size:22px;color:#9FB2D6} .hud .v{font-family:Sora;font-weight:800;font-size:54px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hud .row{display:flex;gap:46px} .hud .stage{font-family:Sora;font-weight:600;font-size:28px;color:var(--orange);margin-bottom:12px}
+body.h #hud{left:70px;bottom:170px} body.v #hud{left:70px;right:70px;top:1330px}
+body.h #mapcopy{left:70px;top:150px;width:760px;z-index:20} body.v #mapcopy{z-index:20} body.v #mapcopy{left:60px;right:60px;top:180px}
+#mapcopy .card{background:rgba(11,30,63,.9);border-radius:28px;padding:26px 30px;display:inline-block;border:2px solid rgba(255,255,255,.12)}
+#mapcopy .h1{font-size:50px;margin-top:8px} body.v #mapcopy .h1{font-size:48px}
+#mapshade{position:absolute;left:0;right:0;top:0;height:230px;background:linear-gradient(rgba(7,20,44,.85),rgba(7,20,44,0));z-index:19}
+#delivered{font-size:25px}
+#attr{position:absolute;right:16px;bottom:12px;font-size:17px;color:#14233F;background:rgba(255,255,255,.8);padding:3px 10px;border-radius:8px;z-index:21}
+body.v #attr{bottom:auto;top:1870px}
+/* Scène 5 */
+.trio{display:flex;align-items:center;justify-content:center;gap:0;margin-top:44px}
+.trio .n{width:150px;text-align:center;font-family:Sora;font-weight:600;font-size:24px}
+.trio .n div{width:112px;height:112px;margin:0 auto 12px;border-radius:32px;display:grid;place-items:center;font-size:54px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18)}
+.trio .l{width:80px;height:6px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden;margin-bottom:40px} .trio .l i{display:block;height:100%;background:var(--orange);width:0}
+body.h .trio{justify-content:flex-start}
+.stars{font-size:60px;letter-spacing:8px;margin-top:30px}
+body.v #ph5{top:810px;width:398px;height:842px;left:341px}
+/* Scène 6 */
+#words{position:absolute;left:0;right:0;text-align:center;font-family:Sora;font-weight:800;letter-spacing:-.03em}
+#words div{font-size:92px;line-height:1.16;opacity:0} #words div:last-child{color:var(--orange)}
+body.h #words{top:270px} body.v #words{top:560px} body.v #words div{font-size:86px}
+#logo{position:absolute;left:0;right:0;text-align:center}
+body.h #logo{top:250px} body.v #logo{top:560px}
+#logo .mark{display:inline-flex;align-items:center;gap:30px;font-family:Sora;font-weight:800;font-size:150px;letter-spacing:-.04em}
+#logo .mark img{width:190px;height:190px;filter:drop-shadow(0 20px 50px rgba(21,101,216,.7))}
+#logo .tag{font-family:Sora;font-weight:600;font-size:58px;margin-top:40px;letter-spacing:-.02em} #logo .tag b{color:var(--orange)}
+#logo .devpill{display:inline-block;margin-top:54px;font-size:32px;font-weight:700;padding:16px 34px;border-radius:999px;background:var(--orange);color:#fff}
+#logo .fine{margin-top:22px;font-size:23px;color:#A9BADB}
+body.v #logo .mark{font-size:128px;gap:22px} body.v #logo .mark img{width:160px;height:160px} body.v #logo .tag{font-size:50px;padding:0 60px;line-height:1.2} body.v #logo .devpill{font-size:29px} body.v #logo .fine{padding:0 80px;line-height:1.4}
+/* Scène 1 */
+#s1 svg{position:absolute;left:0;top:0;width:100%;height:100%}
+#s1copy{position:absolute} body.h #s1copy{left:120px;top:170px;width:1100px} body.v #s1copy{left:70px;right:70px;top:250px;text-align:center}
+#s1copy .h1{font-size:104px;text-shadow:0 6px 40px rgba(7,20,44,.6)} body.v #s1copy .h1{font-size:92px}
+.chips{display:flex;gap:16px;margin-top:34px;flex-wrap:wrap} body.v .chips{justify-content:center}
+.chip{font-family:Sora;font-weight:600;font-size:40px;padding:14px 30px;border-radius:999px;background:#fff;color:var(--blue);box-shadow:0 14px 40px rgba(7,20,44,.4)} .chip.o{background:var(--orange);color:#fff}
+#s1b{position:absolute;font-family:Sora;font-weight:800;letter-spacing:-.03em;text-shadow:0 6px 40px rgba(7,20,44,.7)}
+body.h #s1b{left:120px;top:200px;width:1200px;font-size:96px;line-height:1.06} body.v #s1b{left:70px;right:70px;top:270px;font-size:84px;line-height:1.08;text-align:center}
+#s1b b{color:var(--orange)}
+</style></head>
+<body>
+<div id="stage">
+  <div class="fill" id="bg"><div class="blob" id="b1" style="width:900px;height:900px;background:#1565D8"></div><div class="blob" id="b2" style="width:700px;height:700px;background:#FF7900;opacity:.3"></div></div>
+
+  <!-- 1. Grenoble -->
+  <div class="scene" id="s1"><svg id="art" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice"></svg>
+    <div id="s1copy"><div class="eyebrow" data-in="0.5" data-out="6.5">Grenoble · Isère</div>
+      <div class="h1" data-in="1.0" data-out="6.5">Et si la livraison<br>devenait…</div>
+      <div class="chips"><div class="chip" data-in="3.3" data-out="6.5" data-pop>plus simple</div><div class="chip" data-in="4.5" data-out="6.5" data-pop>plus rapide</div><div class="chip o" data-in="5.4" data-out="6.5" data-pop>plus locale ?</div></div></div>
+    <div id="s1b" data-in="6.9" data-out="12.7">Une nouvelle façon de <b>commander</b> et de <b>livrer</b> dans votre ville.</div>
+  </div>
+
+  <!-- 2. Client -->
+  <div class="scene" id="s2">
+    <div class="copy"><div class="eyebrow" data-in="13.3" data-out="26.3">Pour les clients</div>
+      <div class="h1" data-in="13.6" data-out="26.3">Commandez en<br><b>quelques clics</b></div>
+      <div class="steps"><div class="stepc" data-in="14.6" data-out="26.3" data-hl="14.6,17.2"><i>1</i>Découvrez vos restaurants</div><div class="stepc" data-in="17.2" data-out="26.3" data-hl="17.2,19.3"><i>2</i>Choisissez votre repas</div><div class="stepc" data-in="19.3" data-out="26.3" data-hl="19.3,26.6"><i>3</i>Commandez et payez</div></div></div>
+    <div class="phone" id="ph2"><div class="notch"></div><div class="scr" data-seq="13.04:02,17.3:03,19.6:04,21.9:05,24.0:10"></div>
+      <div class="tap" data-tap="16.8" style="left:42%;top:52%"></div><div class="tap" data-tap="19.1" style="left:68%;top:93%"></div><div class="tap" data-tap="21.4" style="left:50%;top:85%"></div><div class="tap" data-tap="23.5" style="left:50%;top:80%"></div></div>
+  </div>
+
+  <!-- 3. Commerçant -->
+  <div class="scene" id="s3">
+    <div class="copy" id="c3"><div class="eyebrow" data-in="26.9" data-out="40.1">Pour les commerçants</div>
+      <div class="h1" data-in="27.2" data-out="40.1">Tout devient<br><b>plus simple</b></div>
+      <div class="steps"><div class="stepc" data-in="30.4" data-out="40.1" data-hl="30.4,32.8"><i>⚡</i>Commandes instantanées</div><div class="stepc" data-in="32.8" data-out="40.1" data-hl="32.8,34.6"><i>👩‍🍳</i>Préparation organisée</div><div class="stepc" data-in="34.6" data-out="40.1" data-hl="34.6,40.4"><i>📍</i>Suivi en temps réel</div></div></div>
+    <div class="tablet" id="tb3"><div class="scr" data-seq="26.65:06,32.6:09,36.4:15"></div>
+      <div class="tap" data-tap="32.1" style="left:36%;top:71%"></div><div class="tap" data-tap="35.9" style="left:80%;top:60%"></div>
+      <div class="pop" id="ring" style="right:-30px;top:-50px"><div class="ic">🔔</div><div>Nouvelle commande !<small>Pizzeria Belledonne · à l'instant</small></div></div></div>
+  </div>
+
+  <!-- 4. Livreur + GPS -->
+  <div class="scene" id="s4">
+    <div class="fill" id="mapscene" style="opacity:0"><div id="mapwrap"><img src="a/map.jpg"><div id="maptint"></div>
+        <svg class="abs" style="left:0;top:0" width="2048" height="1536"><polyline id="r1c" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><polyline id="r2c" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><polyline id="r1" fill="none" stroke="#1565D8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><polyline id="r2" fill="none" stroke="#1565D8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="mk" id="mkR"><div class="pin"><span>🍕</span></div><div class="lbl">Restaurant</div></div>
+        <div class="mk" id="mkC"><div class="pin"><span>🏠</span></div><div class="lbl">Client</div></div>
+        <div class="mk" id="mkK"><div class="rider">🚲</div></div></div>
+      <div id="mapshade"></div><div class="abs" id="mapcopy"><div class="card"><div class="eyebrow">GPS intelligent</div><div class="h1" id="mapttl">Guidé jusqu'au <b>restaurant</b></div></div></div>
+      <div class="hud" id="hud"><div class="stage" id="hudstage">→ Vers le restaurant</div><div class="row"><div><div class="k">Distance restante</div><div class="v" id="hudd">0 m</div></div><div><div class="k">Temps estimé</div><div class="v" id="hudt">0 min</div></div></div></div>
+      <div class="pop" id="picked"><div class="ic" style="background:#12A150">✓</div><div>Commande récupérée<small>Direction : le client</small></div></div>
+      <div id="attr">© OpenStreetMap</div></div>
+    <div class="fill" id="offer">
+      <div class="copy"><div class="eyebrow" data-in="40.7" data-out="45.6">Pour les livreurs</div>
+        <div class="h1" data-in="41.0" data-out="45.6">Vos missions,<br><b>sur votre téléphone</b></div>
+        <div class="lead" data-in="42.2" data-out="45.6">Rémunération, distance et destination affichées avant d'accepter.</div></div>
+      <div class="phone" id="ph4"><div class="notch"></div><div class="scr" data-seq="40.44:07"></div><div class="tap" data-tap="44.6" style="left:66%;top:94%"></div></div></div>
+  </div>
+
+  <!-- 5. Livraison -->
+  <div class="scene" id="s5">
+    <div class="copy"><div class="eyebrow" data-in="59.2" data-out="70.2">De la commande à la livraison</div>
+      <div class="h1" data-in="59.5" data-out="70.2">Une expérience<br><b>fluide</b></div>
+      <div class="lead" data-in="63.9" data-out="70.2">Pensée pour les Grenoblois et leurs commerces de proximité.</div>
+      <div class="trio" data-in="64.6" data-out="70.2"><div class="n"><div>🛍️</div>Clients</div><div class="l"><i id="l1"></i></div><div class="n"><div>🏪</div>Commerçants</div><div class="l"><i id="l2"></i></div><div class="n"><div>🚲</div>Livreurs</div></div></div>
+    <div class="phone" id="ph5"><div class="notch"></div><div class="scr" data-seq="58.9:10,63.2:13"></div>
+      <div class="pop" id="delivered" style="left:-40px;right:-40px;top:70px;white-space:normal"><div class="ic">🎉</div><div>Votre commande est livrée !<small>GreLiv · maintenant</small></div></div></div>
+  </div>
+
+  <!-- 6. Conclusion -->
+  <div class="scene" id="s6">
+    <div class="fill" id="endmap" style="background:url(a/map.jpg) center/cover;filter:saturate(.3) brightness(.55)"></div>
+    <div class="fill" style="background:radial-gradient(ellipse at center,rgba(11,30,63,.72),rgba(7,20,44,.96))"></div>
+    <div class="fill" style="background:rgba(21,101,216,.28);mix-blend-mode:overlay"></div>
+    <div id="words"><div>Une ville.</div><div>Des commerçants.</div><div>Des livreurs.</div><div>Une seule application.</div></div>
+    <div id="logo"><div class="mark" id="mark"><img src="a/icon.svg">GreLiv</div>
+      <div class="tag" id="tag">Grenoble mérite <b>sa propre livraison.</b></div>
+      <div><div class="devpill" id="devpill">Projet en développement — application pas encore disponible</div></div>
+      <div class="fine" id="fine">Nom et logo provisoires · Écrans issus du prototype · Établissements présentés fictifs</div></div>
+  </div>
+
+  <div id="brand"><img src="a/icon.svg">GreLiv</div><div id="dev">Projet en développement</div>
+  <div id="sub"><span></span></div>
+</div>
+<script>
+const TL = __TIMELINE__, RT = __ROUTE__;
+const V = new URLSearchParams(location.search).get('fmt') === 'v';
+document.body.className = V ? 'v' : 'h';
+const W = V ? 1080 : 1920, H = V ? 1920 : 1080;
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), p = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3), eio = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const back = (x) => 1 + 2.7 * Math.pow(x - 1, 3) + 1.7 * Math.pow(x - 1, 2);
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// ── Scène 1 : Grenoble illustrée (montagnes, Bastille, bulles, ville, Isère) ──
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+function ridge(base, amp, step, rough) { let pts = [], y = base; for (let x = -200; x <= 2120; x += step) { y += (rnd() - .5) * rough; y = cl(y, base - amp, base + amp * .5); pts.push([x, y]); } return pts; }
+const poly = (pts, bottom = 1100) => `M${pts[0][0]},${bottom} ` + pts.map((q) => `L${q[0]},${q[1].toFixed(1)}`).join(' ') + ` L${pts[pts.length - 1][0]},${bottom} Z`;
+(function art() {
+  const far = ridge(430, 190, 46, 120), mid = ridge(590, 120, 60, 80), near = ridge(720, 70, 90, 46);
+  let stars = ''; for (let i = 0; i < 70; i++) stars += `<circle cx="${rnd() * 1920}" cy="${rnd() * 420}" r="${1 + rnd() * 1.6}" fill="#fff" opacity="${.25 + rnd() * .6}"/>`;
+  let city = '', win = '';
+  for (let x = -100; x < 2050;) { const w = 46 + rnd() * 80, h = 70 + rnd() * 150, y = 905 - h; city += `<rect x="${x}" y="${y}" width="${w}" height="${h + 40}" fill="#081A3A"/>`;
+    for (let wy = y + 14; wy < 890; wy += 24) for (let wx = x + 10; wx < x + w - 12; wx += 20) if (rnd() > .5) win += `<rect x="${wx}" y="${wy}" width="9" height="12" rx="2" fill="${rnd() > .3 ? '#FFC073' : '#8FB8FF'}" opacity="${.5 + rnd() * .5}"/>`;
+    x += w + 3 + rnd() * 10; }
+  $('#art').innerHTML = `
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07142C"/><stop offset=".45" stop-color="#123F96"/><stop offset=".72" stop-color="#1565D8"/><stop offset=".9" stop-color="#FF9A3D"/><stop offset="1" stop-color="#FF7900"/></linearGradient>
+  <radialGradient id="sun"><stop offset="0" stop-color="#FFD9A8"/><stop offset=".35" stop-color="#FF9A3D" stop-opacity=".9"/><stop offset="1" stop-color="#FF7900" stop-opacity="0"/></radialGradient>
+  <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F8FF"/><stop offset=".3" stop-color="#B9D0F7"/><stop offset="1" stop-color="#3D74CF"/></linearGradient>
+  <linearGradient id="riv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D5FCB"/><stop offset="1" stop-color="#07142C"/></linearGradient></defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/><g id="stars">${stars}</g>
+  <circle id="sunc" cx="1180" cy="700" r="420" fill="url(#sun)"/>
+  <g id="lfar"><path d="${poly(far)}" fill="url(#snow)"/></g>
+  <g id="lmid"><path d="${poly(mid)}" fill="#1B4FB0"/></g>
+  <g id="lnear"><path d="${poly(near)}" fill="#12397F"/>
+    <path d="M430,930 L600,640 L700,560 L760,470 L830,440 L900,452 L960,500 L1040,620 L1180,760 L1330,930 Z" fill="#0A2456"/>
+    <g fill="#0A2456"><rect x="770" y="418" width="150" height="36" rx="3"/><rect x="800" y="396" width="60" height="26"/><rect x="884" y="404" width="26" height="20"/><rect x="760" y="432" width="14" height="24"/></g>
+    <g fill="#FFC073"><rect x="812" y="404" width="8" height="10"/><rect x="832" y="404" width="8" height="10"/><rect x="790" y="430" width="8" height="10"/><rect x="852" y="430" width="8" height="10"/><rect x="890" y="430" width="8" height="10"/></g>
+    <line x1="1330" y1="905" x2="905" y2="440" stroke="#DCE8FF" stroke-width="2.5" opacity=".8"/><g id="bulles"></g></g>
+  <g id="lcity">${city}${win}</g>
+  <rect y="905" width="1920" height="175" fill="url(#riv)"/><g id="refl"></g>
+  <rect y="900" width="1920" height="10" fill="#061633"/>
+  <g id="bike"><circle cx="0" cy="0" r="15" fill="none" stroke="#fff" stroke-width="4"/><circle cx="48" cy="0" r="15" fill="none" stroke="#fff" stroke-width="4"/><path d="M0,0 L18,-26 L40,-26 L48,0 M18,-26 L26,0 L0,0 M22,-34 L14,-34 M40,-26 L36,-38 L46,-40" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="-54" r="9" fill="#fff"/><path d="M22,-44 L20,-30 L36,-36" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><rect x="-6" y="-58" width="24" height="24" rx="5" fill="#FF7900"/></g>`;
+})();
+function scene1(t) {
+  const k = t / 13;
+  $('#lfar').setAttribute('transform', `translate(${-30 * k},${-6 * k}) `);
+  $('#lmid').setAttribute('transform', `translate(${-70 * k},0)`);
+  $('#lnear').setAttribute('transform', `translate(${-120 * k},0)`);
+  $('#lcity').setAttribute('transform', `translate(${-190 * k},0)`);
+  $('#sunc').setAttribute('cy', 720 - 60 * k);
+  $('#art').style.transform = `scale(${1.02 + .1 * eio(k)})`; $('#art').style.transformOrigin = '50% 70%';
+  let b = ''; // les « bulles » du téléphérique de la Bastille
+  for (let i = 0; i < 2; i++) { const u = ((t * .045 + i * .5) % 1), up = i === 0, f = up ? u : 1 - u, x = 1330 - 425 * f, y = 905 - 465 * f;
+    for (let j = 0; j < 4; j++) b += `<circle cx="${x + (j - 1.5) * 21}" cy="${y + 16 + Math.abs(j - 1.5) * 2}" r="11" fill="#EAF2FF" stroke="#FF7900" stroke-width="3"/>`;
+    b += `<line x1="${x - 34}" y1="${y + 3}" x2="${x + 34}" y2="${y + 3}" stroke="#DCE8FF" stroke-width="3"/>`; }
+  $('#bulles').innerHTML = b;
+  let r = ''; for (let i = 0; i < 26; i++) { const x = (i * 137 + 60) % 1920, w = 30 + (i * 53) % 90, y = 925 + (i * 29) % 130; r += `<rect x="${x + Math.sin(t * 1.3 + i) * 14}" y="${y}" width="${w}" height="3" rx="1.5" fill="${i % 3 ? '#8FB8FF' : '#FFB05C'}" opacity="${.18 + .22 * Math.abs(Math.sin(t * .9 + i * 1.7))}"/>`; }
+  $('#refl').innerHTML = r;
+  const bx = V ? lerp(560, 1420, k) : lerp(-80, 2000, k);
+  $('#bike').setAttribute('transform', `translate(${bx},884) scale(1.5)`);
+}
+
+// ── Générique : apparitions déclaratives ──
+function declarative(t) {
+  for (const el of $$('[data-in]')) {
+    const a = +el.dataset.in, b = +el.dataset.out, k = p(t, a, a + .55), o = 1 - p(t, b - .35, b);
+    let tr = el.dataset.pop !== undefined ? `scale(${k <= 0 ? 0 : back(k)})` : `translateY(${(1 - eo(k)) * 46}px)`;
+    el.style.opacity = Math.min(k * 1.4, 1) * o; el.style.transform = tr;
+    if (el.dataset.hl) { const [h0, h1] = el.dataset.hl.split(',').map(Number), on = t >= h0 && t < h1;
+      el.style.background = on ? 'rgba(255,121,0,.95)' : 'rgba(255,255,255,.07)'; el.style.borderColor = on ? '#FF7900' : 'rgba(255,255,255,.1)';
+      el.firstElementChild.style.background = on ? '#fff' : '#1565D8'; el.firstElementChild.style.color = on ? '#FF7900' : '#fff'; }
+  }
+  for (const el of $$('[data-tap]')) { const k = p(t, +el.dataset.tap, +el.dataset.tap + .55); el.style.opacity = k > 0 && k < 1 ? 1 - k : 0; el.style.transform = `scale(${.4 + k * 1.3})`; }
+}
+for (const scr of $$('[data-seq]')) { scr._seq = scr.dataset.seq.split(',').map((s) => { const [a, n] = s.split(':'); const img = new Image(); img.src = `a/${n}.jpg`; scr.appendChild(img); return { a: +a, img }; }); }
+function sequences(t) {
+  for (const scr of $$('[data-seq]')) scr._seq.forEach((s, i) => {
+    const k = i === 0 ? 1 : eo(p(t, s.a, s.a + .5)), next = scr._seq[i + 1], kn = next ? eo(p(t, next.a, next.a + .5)) : 0;
+    s.img.style.transform = `translateX(${(1 - k) * 100 - kn * 28}%)`; s.img.style.filter = `brightness(${1 - kn * .35})`; s.img.style.zIndex = i;
+  });
+}
+function device(el, t, a, b, tilt) {
+  const k = eo(p(t, a, a + .9)), o = p(t, b - .45, b), fl = Math.sin(t * 1.1) * 8;
+  el.style.opacity = Math.min(1, p(t, a, a + .4) * 1.5) * (1 - o);
+  el.style.transform = `perspective(2200px) translateY(${(1 - k) * 160 + fl + o * -60}px) rotateY(${lerp(tilt, tilt * .25, k) + Math.sin(t * .6) * 1.6}deg) rotateX(${lerp(8, 2, k)}deg) scale(${lerp(.9, 1, k)})`;
+}
+
+// ── Scène 4 : carte GPS ──
+const MPP = 0.8417; // mètres par pixel (zoom 17, latitude de Grenoble)
+function measure(pts) { let acc = [0]; for (let i = 1; i < pts.length; i++) acc.push(acc[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return acc; }
+const A1 = measure(RT.r1), A2 = measure(RT.r2), L1 = A1[A1.length - 1], L2 = A2[A2.length - 1];
+function along(pts, acc, f) { const d = f * acc[acc.length - 1]; let i = 1; while (i < acc.length - 1 && acc[i] < d) i++; const k = (d - acc[i - 1]) / (acc[i] - acc[i - 1] || 1); return [lerp(pts[i - 1][0], pts[i][0], cl(k)), lerp(pts[i - 1][1], pts[i][1], cl(k))]; }
+for (const [id, pts, L] of [['r1', RT.r1, L1], ['r2', RT.r2, L2]]) for (const s of ['', 'c']) { const e = $('#' + id + s); e.setAttribute('points', pts.map((q) => q.join(',')).join(' ')); e.style.strokeDasharray = L + 2; }
+const R = RT.r1[RT.r1.length - 1], C = RT.r2[RT.r2.length - 1], K0 = RT.r1[0];
+function scene4(t) {
+  const mo = p(t, 45.3, 46.2); $('#mapscene').style.opacity = mo; $('#offer').style.opacity = 1 - p(t, 45.2, 45.8);
+  const d1 = eio(p(t, 46.2, 47.8)), d2 = eio(p(t, 50.9, 52.2));
+  for (const s of ['', 'c']) { $('#r1' + s).style.strokeDashoffset = (1 - d1) * (L1 + 2); $('#r2' + s).style.strokeDashoffset = (1 - d2) * (L2 + 2); $('#r2' + s).style.opacity = d2 > 0 ? 1 : 0; $('#r1' + s).style.opacity = d1 > 0 ? 1 : 0; }
+  const f1 = eio(p(t, 47.9, 50.5)), f2 = eio(p(t, 52.3, 57.6));
+  const pos = f2 > 0 ? along(RT.r2, A2, f2) : along(RT.r1, A1, f1);
+  // caméra : vue d'ensemble → suivi du livreur → vue d'ensemble
+  const sWide = V ? 1.28 : 1.42, sNear = V ? 1.75 : 2.0, wide = [1425, 690];
+  const z = eio(p(t, 47.6, 49.2)) * (1 - eio(p(t, 56.6, 58.4)));
+  const s = lerp(sWide, sNear, z), ax = V ? W / 2 : W * .58, ay = V ? H * .44 : H * .5;
+  // la carte doit toujours couvrir tout l'écran : on borne le centre de la caméra
+  const cx = cl(lerp(wide[0], pos[0], z), ax / s, 2048 - (W - ax) / s), cy = cl(lerp(wide[1], pos[1], z), ay / s, 1536 - (H - ay) / s);
+  $('#mapwrap').style.transform = `translate(${ax - cx * s}px,${ay - cy * s}px) scale(${s})`;
+  const place = (el, q, pop) => { el.style.left = q[0] + 'px'; el.style.top = q[1] + 'px'; el.style.transform = `scale(${pop / s})`; };
+  place($('#mkR'), R, back(p(t, 46.0, 46.6)) * (p(t, 46.0, 46.1) > 0 ? 1 : 0)); place($('#mkC'), C, back(p(t, 50.6, 51.2)) * (p(t, 50.6, 50.7) > 0 ? 1 : 0));
+  place($('#mkK'), pos, back(p(t, 45.8, 46.4)) * (1 + .06 * Math.sin(t * 7)));
+  const toClient = t >= 50.8, rem = toClient ? (1 - f2) * L2 * MPP : (1 - f1) * L1 * MPP + L2 * MPP * 0, meters = Math.round(rem / 10) * 10;
+  $('#hudstage').textContent = toClient ? '→ Vers le client' : '→ Vers le restaurant';
+  $('#mapttl').innerHTML = toClient ? 'Puis jusqu\'au <b>client</b>' : 'Guidé jusqu\'au <b>restaurant</b>';
+  $('#hudd').textContent = meters >= 1000 ? (meters / 1000).toFixed(1).replace('.', ',') + ' km' : meters + ' m';
+  $('#hudt').textContent = Math.max(rem > 15 ? 1 : 0, Math.ceil(rem / (15000 / 60))) + ' min';
+  const hk = eo(p(t, 46.4, 47.1)); $('#hud').style.opacity = hk; $('#hud').style.transform = `translateY(${(1 - hk) * 60}px)`;
+  const ck = eo(p(t, 46.2, 46.9)); $('#mapcopy').style.opacity = ck; $('#mapcopy').style.transform = `translateY(${(1 - ck) * -40}px)`;
+  const pk = p(t, 50.5, 51.0), po = p(t, 52.6, 53.0), pe = $('#picked'); pe.style.opacity = (pk > 0 ? 1 : 0) * (1 - po);
+  pe.style.left = (V ? 150 : W * .58 - 230) + 'px'; pe.style.top = (V ? 1130 : 250) + 'px'; pe.style.transform = `scale(${pk <= 0 ? 0 : back(pk)})`;
+}
+
+// ── Scènes 3, 5, 6 : éléments spécifiques ──
+function extras(t) {
+  const rk = p(t, 27.3, 27.8), ro = p(t, 31.6, 32.0), ring = $('#ring');
+  ring.style.opacity = (rk > 0 ? 1 : 0) * (1 - ro); ring.style.transform = `scale(${rk <= 0 ? 0 : back(rk)}) rotate(${Math.sin(t * 22) * 2.2 * (1 - p(t, 28.6, 29))}deg)`;
+  const dk = p(t, 62.6, 63.2), de = $('#delivered'); de.style.opacity = dk > 0 ? 1 : 0; de.style.transform = `translateY(${(1 - (dk <= 0 ? 0 : back(dk))) * -220}px)`;
+  $('#l1').style.width = eio(p(t, 65.2, 66.2)) * 100 + '%'; $('#l2').style.width = eio(p(t, 66.2, 67.2)) * 100 + '%';
+  const wt = [71.69, 72.85, 74.22, 75.8]; $$('#words div').forEach((w, i) => { const k = p(t, wt[i], wt[i] + .4), o = 1 - p(t, 77.3, 77.75); w.style.opacity = Math.min(1, k * 1.5) * o; w.style.transform = `translateY(${(1 - eo(k)) * 50 - (1 - o) * 30}px) scale(${lerp(.92, 1, eo(k))})`; });
+  const mk = p(t, 77.75, 78.5); $('#mark').style.opacity = mk > 0 ? Math.min(1, mk * 2) : 0; $('#mark').style.transform = `scale(${mk <= 0 ? 0 : back(mk)})`;
+  const set = (id, a, dy = 40) => { const k = eo(p(t, a, a + .6)); $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - k) * dy}px)`; };
+  set('#tag', 79.0); set('#devpill', 80.9); set('#fine', 81.4, 20);
+  $('#endmap').style.transform = `scale(${1.15 + .1 * p(t, 70, 86)})`;
+}
+
+const scenes = ['#s1', '#s2', '#s3', '#s4', '#s5', '#s6'].map($);
+window.render = (t) => {
+  TL.scenes.forEach((s, i) => { const el = scenes[i], fin = i === 0 ? 1 : eo(p(t, s.a - .1, s.a + .45)), fout = i === 5 ? p(t, TL.total - .6, TL.total) : p(t, s.b - .35, s.b + .1);
+    const vis = t >= s.a - .1 && t <= s.b + .1; el.style.opacity = vis ? Math.min(fin * 1.3, 1) * (1 - fout) : 0; el.style.visibility = vis ? 'visible' : 'hidden';
+    el.style.transform = i === 0 ? '' : `translateX(${(1 - fin) * 90 - fout * 70}px)`; });
+  $('#b1').style.left = (W * .55 + Math.sin(t * .23) * 240) + 'px'; $('#b1').style.top = (H * .1 + Math.cos(t * .19) * 160) + 'px';
+  $('#b2').style.left = (W * -.05 + Math.cos(t * .21) * 200) + 'px'; $('#b2').style.top = (H * .55 + Math.sin(t * .17) * 160) + 'px';
+  if (t < 13.3) scene1(t);
+  declarative(t); sequences(t); extras(t);
+  device($('#ph2'), t, 13.2, 26.75, V ? 0 : -16); device($('#tb3'), t, 26.8, 40.55, V ? 0 : -12); device($('#ph4'), t, 40.6, 45.9, V ? 0 : -16); device($('#ph5'), t, 59.0, 70.6, V ? 0 : -16);
+  if (t > 40 && t < 59.2) scene4(t);
+  const bo = p(t, .3, 1) * (1 - p(t, 70.2, 70.6)); $('#brand').style.opacity = bo; $('#dev').style.opacity = bo;
+  const cue = TL.cues.find((c) => t >= c.a && t < c.b), sub = $('#sub span'); sub.style.display = cue ? 'inline-block' : 'none';
+  if (cue && !V) sub.textContent = cue.text;
+  if (cue && V) { // format vertical : sous-titres mot à mot (groupes de 3 mots, mot prononcé surligné)
+    const words = cue.text.split(' ').reduce((acc, w) => { if ('?!:;'.includes(w) && acc.length) acc[acc.length - 1] += ' ' + w; else acc.push(w); return acc; }, []);
+    const tot = words.reduce((a, w) => a + w.length + 1, 0); let u = cue.a, cur = 0; const starts = words.map((w) => { const st = u; u += (cue.b - .25 - cue.a) * (w.length + 1) / tot; return st; });
+    starts.forEach((st, i) => { if (t >= st) cur = i; });
+    const g = Math.floor(cur / 3) * 3;
+    sub.className = 'kara'; sub.innerHTML = words.slice(g, g + 3).map((w, i) => `<b class="${g + i === cur ? 'on' : ''}">${w.toUpperCase()}</b>`).join('');
+  }
+};
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]).then(() => { render(0); return true; });
+</script></body></html>

@@ -1,0 +1,156 @@
+{
+ "total": 85.33,
+ "scenes": [
+  {
+   "a": 0.0,
+   "b": 13.04
+  },
+  {
+   "a": 13.04,
+   "b": 26.65
+  },
+  {
+   "a": 26.65,
+   "b": 40.44
+  },
+  {
+   "a": 40.44,
+   "b": 58.9
+  },
+  {
+   "a": 58.9,
+   "b": 70.49
+  },
+  {
+   "a": 70.49,
+   "b": 85.33
+  }
+ ],
+ "cues": [
+  {
+   "a": 1.0,
+   "b": 4.39,
+   "text": "Et si la livraison à Grenoble devenait plus simple,"
+  },
+  {
+   "a": 4.39,
+   "b": 6.51,
+   "text": "plus rapide et plus locale ?"
+  },
+  {
+   "a": 6.71,
+   "b": 9.61,
+   "text": "Découvrez une nouvelle façon de commander"
+  },
+  {
+   "a": 9.61,
+   "b": 11.99,
+   "text": "et de livrer dans votre ville."
+  },
+  {
+   "a": 13.94,
+   "b": 17.21,
+   "text": "En quelques clics, découvrez vos restaurants préférés,"
+  },
+  {
+   "a": 17.21,
+   "b": 19.33,
+   "text": "choisissez votre repas et commandez"
+  },
+  {
+   "a": 19.33,
+   "b": 21.7,
+   "text": "directement depuis votre téléphone."
+  },
+  {
+   "a": 27.45,
+   "b": 30.25,
+   "text": "Pour les commerçants, tout devient plus simple."
+  },
+  {
+   "a": 30.45,
+   "b": 32.85,
+   "text": "Les commandes arrivent instantanément,"
+  },
+  {
+   "a": 32.85,
+   "b": 34.62,
+   "text": "la préparation est organisée"
+  },
+  {
+   "a": 34.62,
+   "b": 38.09,
+   "text": "et chaque livraison peut être suivie en temps réel."
+  },
+  {
+   "a": 41.24,
+   "b": 43.42,
+   "text": "Les livreurs reçoivent leurs missions"
+  },
+  {
+   "a": 43.42,
+   "b": 45.49,
+   "text": "directement sur leur téléphone."
+  },
+  {
+   "a": 45.69,
+   "b": 48.58,
+   "text": "Grâce à un GPS intelligent, ils sont guidés"
+  },
+  {
+   "a": 48.58,
+   "b": 51.41,
+   "text": "jusqu'au restaurant, puis jusqu'au client,"
+  },
+  {
+   "a": 51.41,
+   "b": 53.55,
+   "text": "avec un itinéraire optimisé."
+  },
+  {
+   "a": 59.8,
+   "b": 61.19,
+   "text": "Une expérience fluide,"
+  },
+  {
+   "a": 61.19,
+   "b": 63.71,
+   "text": "de la commande jusqu'à la livraison."
+  },
+  {
+   "a": 63.91,
+   "b": 66.21,
+   "text": "Une solution pensée pour les Grenoblois"
+  },
+  {
+   "a": 66.21,
+   "b": 68.34,
+   "text": "et leurs commerces de proximité."
+  },
+  {
+   "a": 71.69,
+   "b": 72.68,
+   "text": "Une ville."
+  },
+  {
+   "a": 72.85,
+   "b": 74.05,
+   "text": "Des commerçants."
+  },
+  {
+   "a": 74.22,
+   "b": 75.63,
+   "text": "Des livreurs."
+  },
+  {
+   "a": 75.8,
+   "b": 77.54,
+   "text": "Une seule application."
+  },
+  {
+   "a": 77.71,
+   "b": 80.98,
+   "text": "La livraison locale entre dans une nouvelle ère."
+  }
+ ]
+}

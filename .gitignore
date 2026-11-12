@@ -4,3 +4,4 @@ dist
 server/uploads
 *.log
 e2e/node_modules
+marketing/*.mp4
