@@ -78,6 +78,8 @@ const server = http.createServer(app);
 attachRealtime(server);
 
 await migrate();
+// Démonstration en ligne : SEED_DEMO=true charge les données fictives au premier démarrage (sans effet ensuite)
+if (process.env.SEED_DEMO === 'true') await (await import('./seed.js')).seed();
 startDispatchLoop();
 server.listen(config.port, () => {
   console.log(`[api] GreLiv prêt sur http://localhost:${config.port} — paiement : ${paymentProvider}, itinéraires : ${config.routingProvider}`);
