@@ -1,0 +1,16 @@
+{
+  "name": "vinted-bot",
+  "version": "1.0.0",
+  "description": "Bot de surveillance et de classement de recherches Vinted, tourne en permanence",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "once": "node src/index.js --once",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT"
+}

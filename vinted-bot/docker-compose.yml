@@ -1,0 +1,11 @@
+services:
+  vinted-bot:
+    build: .
+    restart: unless-stopped        # redémarre tout seul (plantage, reboot du serveur)
+    ports:
+      - "8080:8080"                # tableau de bord
+    volumes:
+      - ./config.json:/config/config.json:ro
+      - ./data:/data
+    environment:
+      TZ: Europe/Paris

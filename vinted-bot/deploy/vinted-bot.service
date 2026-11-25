@@ -1,0 +1,19 @@
+# Copier dans /etc/systemd/system/ puis :
+#   sudo systemctl daemon-reload && sudo systemctl enable --now vinted-bot
+#   journalctl -u vinted-bot -f      # voir les logs
+[Unit]
+Description=Bot de surveillance Vinted
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=CHANGEZ_MOI
+WorkingDirectory=/opt/vinted-bot
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=10
+Environment=TZ=Europe/Paris
+
+[Install]
+WantedBy=multi-user.target

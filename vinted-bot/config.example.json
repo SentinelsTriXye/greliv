@@ -1,0 +1,49 @@
+{
+  "domaine": "vinted.fr",
+  "intervalle_secondes": 60,
+  "pause_entre_recherches_secondes": 3,
+  "notifier_au_premier_passage": false,
+  "age_max_minutes": 120,
+  "max_articles_memorises": 3000,
+  "tableau_de_bord": { "actif": true, "port": 8080, "mot_de_passe": "" },
+
+  "notifications": {
+    "discord_webhook": "",
+    "telegram": { "token": "", "chat_id": "" }
+  },
+
+  "categories": {
+    "Sneakers": { "couleur": "#09B1BA", "discord_webhook": "" },
+    "Revente": { "couleur": "#FF7900", "discord_webhook": "" },
+    "Perso": { "couleur": "#7B61FF" }
+  },
+
+  "recherches": [
+    {
+      "nom": "Nike Dunk Low 42-43",
+      "categorie": "Sneakers",
+      "url": "https://www.vinted.fr/catalog?search_text=nike%20dunk%20low&brand_ids[]=53&order=newest_first",
+      "prix_max": 80,
+      "prix_cible": 50,
+      "mots_inclus": ["dunk"],
+      "mots_exclus": ["enfant", "kids", "boîte seule", "replica"],
+      "tailles": ["42", "42.5", "43"]
+    },
+    {
+      "nom": "Levi's 501 vintage",
+      "categorie": "Revente",
+      "recherche": "levis 501",
+      "prix_min": 5,
+      "prix_max": 25,
+      "prix_cible": 15,
+      "mots_exclus": ["troué", "déchiré"]
+    },
+    {
+      "nom": "Pull Ralph Lauren",
+      "categorie": "Perso",
+      "recherche": "pull ralph lauren",
+      "prix_max": 30,
+      "actif": false
+    }
+  ]
+}
